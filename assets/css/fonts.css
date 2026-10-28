@@ -40,16 +40,3 @@
   font-display: swap;
 }
 
-/* Playfair Display - Bold (700) */
-@font-face {
-  font-family: 'Playfair Display';
-  src: url('../fonts/playfair/PlayfairDisplay-Bold.eot');
-  src: url('../fonts/playfair/PlayfairDisplay-Bold.eot?#iefix') format('embedded-opentype'),
-       url('../fonts/playfair/PlayfairDisplay-Bold.woff2') format('woff2'),
-       url('../fonts/playfair/PlayfairDisplay-Bold.woff') format('woff'),
-       url('../fonts/playfair/PlayfairDisplay-Bold.ttf') format('truetype'),
-       url('../fonts/playfair/PlayfairDisplay-Bold.svg#PlayfairDisplay-Bold') format('svg');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}

@@ -1829,3 +1829,31 @@ html.menu-open {
     align-self: flex-start;
   }
 }
+
+.video-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  height: 100%;
+  color: #fff;
+  text-align: center;
+  background: linear-gradient(135deg, #0b1522, #1a2a3f);
+}
+.video-placeholder .play {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border: 1.5px solid #fff;
+  border-radius: 50%;
+}
+.video-placeholder p {
+  margin: 0;
+  font-size: 18px;
+}
+.video-placeholder small {
+  font-size: 13px;
+  opacity: 0.7;
+}

@@ -167,15 +167,26 @@
     if (opener) opener.focus();
     opener = null;
   };
-  document.querySelectorAll('[data-modal]').forEach(a => a.addEventListener('click', e => {
+  // the modal markup is fetched on the first click, not at page load
+  let modalsReady = null;
+  const loadModals = () => modalsReady ||= (async () => {
+    const host = document.createElement('div');
+    host.dataset.include = 'components/modal.html';
+    document.body.append(host);
+    await include(document.body);
+    document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => {
+      if (e.target === m || e.target.closest('.modal-close')) closeModal();
+      else if (e.target.closest('a[href^="#"]')) { openModal.hidden = true; clearVideo(openModal); openModal = null; opener = null; document.documentElement.classList.remove('modal-open'); }
+    }));
+  })().catch(err => { modalsReady = null; throw err; });
+  document.addEventListener('click', async e => {
+    const a = e.target.closest('[data-modal]');
+    if (!a) return;
+    e.preventDefault();
+    await loadModals();
     const m = document.getElementById(a.dataset.modal);
-    if (!m) return;
-    e.preventDefault(); showModal(m, a);
-  }));
-  document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => {
-    if (e.target === m || e.target.closest('.modal-close')) closeModal();
-    else if (e.target.closest('a[href^="#"]')) { openModal.hidden = true; clearVideo(openModal); openModal = null; opener = null; document.documentElement.classList.remove('modal-open'); }
-  }));
+    if (m) showModal(m, a);
+  });
   document.addEventListener('keydown', e => {
     if (!openModal) return;
     if (e.key === 'Escape') { closeModal(); return; }
