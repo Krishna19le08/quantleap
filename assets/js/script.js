@@ -199,5 +199,12 @@
   });
   };
 
+  // block right-click, view-source and devtools shortcuts (F12, Ctrl+Shift+I/J/C, Ctrl+U)
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('keydown', e => {
+    const k = e.key.toLowerCase();
+    if (e.key === 'F12' || (e.ctrlKey || e.metaKey) && (k === 'u' || e.shiftKey && 'ijc'.includes(k)) || e.metaKey && e.altKey && 'iju'.includes(k)) e.preventDefault();
+  });
+
   include(document).then(init).catch(err => console.error(err));
 })();
