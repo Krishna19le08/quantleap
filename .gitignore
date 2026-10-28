@@ -42,3 +42,10 @@ artifacts/screenshots/
 artifacts/comparisons/
 artifacts/_backup_prev/
 artifacts/tools/functional-results.json
+
+# Claude / agent tooling and generated artifacts
+.claude/
+.agent/
+.agents/
+CLAUDE.md
+artifacts/
