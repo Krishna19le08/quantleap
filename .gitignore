@@ -1,0 +1,44 @@
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor and IDE settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Dependencies and package-manager files
+node_modules/
+jspm_packages/
+.pnpm-store/
+.yarn/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Common build and coverage output
+dist/
+build/
+coverage/
+
+# Project-generated visual QA output
+artifacts/screenshots/
+artifacts/comparisons/
+artifacts/_backup_prev/
+artifacts/tools/functional-results.json

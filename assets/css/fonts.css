@@ -1,0 +1,82 @@
+/* Inter */
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/inter/Inter18pt-Regular.eot');
+  src: url('../fonts/inter/Inter18pt-Regular.eot?#iefix') format('embedded-opentype'),
+       url('../fonts/inter/Inter18pt-Regular.woff2') format('woff2'),
+       url('../fonts/inter/Inter18pt-Regular.woff') format('woff'),
+       url('../fonts/inter/Inter18pt-Regular.ttf') format('truetype'),
+       url('../fonts/inter/Inter18pt-Regular.svg#Inter18pt-Regular') format('svg');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Playfair Display - Regular (400) */
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('../fonts/playfair/PlayfairDisplay-Regular.eot');
+  src: url('../fonts/playfair/PlayfairDisplay-Regular.eot?#iefix') format('embedded-opentype'),
+       url('../fonts/playfair/PlayfairDisplay-Regular.woff2') format('woff2'),
+       url('../fonts/playfair/PlayfairDisplay-Regular.woff') format('woff'),
+       url('../fonts/playfair/PlayfairDisplay-Regular.ttf') format('truetype'),
+       url('../fonts/playfair/PlayfairDisplay-Regular.svg#PlayfairDisplay-Regular') format('svg');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Playfair Display - Italic (400) */
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('../fonts/playfair/PlayfairDisplay-Regular.woff2') format('woff2'),
+       url('../fonts/playfair/PlayfairDisplay-Regular.woff') format('woff'),
+       url('../fonts/playfair/PlayfairDisplay-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Playfair Display - Medium (500) */
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('../fonts/playfair/PlayfairDisplay-Regular.woff2') format('woff2'),
+       url('../fonts/playfair/PlayfairDisplay-Regular.woff') format('woff'),
+       url('../fonts/playfair/PlayfairDisplay-Regular.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Playfair Display - SemiBold (600) */
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('../fonts/playfair/PlayfairDisplay-Regular.woff2') format('woff2'),
+       url('../fonts/playfair/PlayfairDisplay-Regular.woff') format('woff'),
+       url('../fonts/playfair/PlayfairDisplay-Regular.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Playfair Display - SemiBold Italic (600) */
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('../fonts/playfair/PlayfairDisplay-Regular.woff2') format('woff2'),
+       url('../fonts/playfair/PlayfairDisplay-Regular.woff') format('woff'),
+       url('../fonts/playfair/PlayfairDisplay-Regular.ttf') format('truetype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Playfair Display - Bold (700) */
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('../fonts/playfair/PlayfairDisplay-Regular.woff2') format('woff2'),
+       url('../fonts/playfair/PlayfairDisplay-Regular.woff') format('woff'),
+       url('../fonts/playfair/PlayfairDisplay-Regular.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
