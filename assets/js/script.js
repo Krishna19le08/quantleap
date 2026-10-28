@@ -34,6 +34,7 @@
   // mobile menu
   const burger = document.getElementById('burger');
   const nav = document.getElementById('nav');
+  const backdrop = document.getElementById('nav-backdrop');
   const compact = matchMedia('(max-width:1000px)');
   const subToggle = nav.querySelector('.has-sub > a');
   const setSub = open => {
@@ -43,6 +44,8 @@
   const setMenu = open => {
     nav.classList.toggle('open', open);
     burger.setAttribute('aria-expanded', open);
+    document.documentElement.classList.toggle('menu-open', open);
+    document.body.classList.toggle('menu-open', open);
     if (!open) setSub(false);
   };
   // desktop: dropdown is hover/focus driven; compact: tapping the parent link expands it as an accordion
@@ -53,8 +56,19 @@
     e.preventDefault();
     setSub(!subToggle.parentElement.classList.contains('open'));
   });
-  compact.addEventListener('change', () => { setSub(false); nav.classList.remove('open'); burger.setAttribute('aria-expanded', false); });
+  compact.addEventListener('change', () => { setMenu(false); });
   burger.addEventListener('click', () => setMenu(!nav.classList.contains('open')));
+  if (backdrop) {
+    backdrop.addEventListener('click', () => setMenu(false));
+    backdrop.addEventListener('touchmove', e => {
+      if (nav.classList.contains('open')) e.preventDefault();
+    }, { passive: false });
+  }
+  document.addEventListener('click', e => {
+    if (nav.classList.contains('open') && !nav.contains(e.target) && !burger.contains(e.target)) {
+      setMenu(false);
+    }
+  });
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && nav.classList.contains('open')) { setMenu(false); burger.focus(); }
   });

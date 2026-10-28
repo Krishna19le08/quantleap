@@ -1,4 +1,4 @@
-@import url('fonts.css');
+@import url("fonts.css");
 
 :root {
   --navy: #001c2a;
@@ -58,12 +58,10 @@ h1,
 h2,
 h3 {
   font-family: var(--serif);
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.15;
 }
-h2 {
-  font-weight: 600;
-} /* every section heading: Playfair Display SemiBold */
+/* every section heading: Playfair Display SemiBold */
 h2 {
   font-size: clamp(28px, 3.2vw, 40px);
 }
@@ -483,6 +481,14 @@ main > section:not(.hero) {
 .nation.section-dark.alt {
   background: var(--navy);
 } /* nation is flat navy; presence keeps the glow */
+.section-divider {
+  background: rgba(255, 255, 255, 0.18);
+  height: 1px;
+  margin-inline: auto;
+  width: min(1280px, calc(100% - 48px));
+  padding: 0;
+  opacity: 0.45;
+}
 .head-row {
   display: flex;
   justify-content: space-between;
@@ -762,8 +768,8 @@ main > section:not(.hero) {
   border-left: 1px solid rgba(255, 255, 255, 0.18);
 }
 .nation-copy .btn {
-  position: relative;
-  top: 17px;
+  position: static;
+  margin-top: 17px;
 }
 .map-box {
   position: relative;
@@ -1289,9 +1295,18 @@ main > section:not(.hero) {
     transform: none;
   }
 }
-html.modal-open {
-  overflow: hidden;
+html.modal-open,
+html.menu-open,
+body.menu-open {
+  overflow: hidden !important;
+  touch-action: none;
+  overscroll-behavior: none;
+}
+html.menu-open {
   scrollbar-gutter: stable;
+}
+.nav-backdrop {
+  display: none;
 }
 .modal[hidden] {
   display: none;
@@ -1500,38 +1515,85 @@ html.modal-open {
   }
 }
 @media (max-width: 1000px) {
+  html.menu-open .site-header,
+  html.menu-open .site-header.stuck {
+    position: fixed;
+    z-index: 99;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background-color: rgba(1, 19, 31, 0.98);
+  }
+  .nav-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(1, 13, 22, 0.65);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 90;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity 0.35s ease,
+      visibility 0.35s;
+  }
+  html.menu-open .nav-backdrop {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
   .burger {
     display: block;
+    z-index: 100;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
   }
   .nav > [id="nav"] {
     margin: 0;
   }
   #nav {
     position: fixed;
-    inset: 90px 0 auto 0;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
     background: var(--navy-2);
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+    border: 0;
+    box-shadow: none;
+    z-index: 95;
+    padding: 106px 24px 40px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+    transform: translateX(100%);
+    visibility: hidden;
+    transition:
+      transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+      visibility 0.35s;
   }
   #nav.open {
-    max-height: 80vh;
-    overflow: auto;
-    border-bottom: 1px solid var(--line);
+    transform: translateX(0);
+    visibility: visible;
   }
   #nav > ul {
     flex-direction: column;
     align-items: flex-start;
     gap: 0;
-    padding: 12px 24px 20px;
+    padding: 0;
+    margin: 0;
+    width: 100%;
   }
   #nav > ul > li {
     width: 100%;
     border-bottom: 1px solid var(--line);
   }
   #nav.open > ul > li {
-    animation: navIn 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-    animation-delay: calc(var(--i, 0) * 55ms + 120ms);
+    animation: navIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i, 0) * 40ms + 100ms);
   }
   #nav a {
     padding: 14px 0;
@@ -1590,7 +1652,7 @@ html.modal-open {
 @keyframes navIn {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateX(20px);
   }
   to {
     opacity: 1;
