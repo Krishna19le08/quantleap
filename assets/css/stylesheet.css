@@ -78,9 +78,9 @@ em {
   color: var(--gold);
 }
 .eyebrow {
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.2em;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--white);
   margin-bottom: 14px;
 }
@@ -552,17 +552,15 @@ main > section:not(.hero) {
 }
 
 /* focus */
-.focus .eyebrow {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.22em;
-}
 .focus-top {
   display: grid;
   grid-template-columns: minmax(0, 400px) 1fr;
   gap: 40px;
   align-items: center;
   margin-bottom: 70px;
+}
+.focus-top h2 em {
+  color: var(--gold-2); /* deeper gold so "sustainable JAPAC." stays readable on cream */
 }
 .focus-top h2 {
   font-size: clamp(26px, 2.5vw, 36px);
@@ -581,19 +579,25 @@ main > section:not(.hero) {
 .pillars {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 0;
-  margin-left: -26px;
-  width: calc(100% + 26px);
-} /* equal columns; the shift puts the first column's text on the container edge */
+  gap: 18px; /* separate cards with space between them */
+}
 .pillar {
-  padding: 6px 26px 8px;
-  border-left: 1px solid var(--line-light);
+  padding: 30px 28px 32px;
+  background: var(--cream); /* same colour as the section; the shadow alone lifts each card */
+  border: 1px solid rgba(255, 255, 255, 0.9); /* faint light edge, no hard outline */
+  border-radius: 8px;
+  box-shadow:
+    0 1px 3px rgba(20, 33, 58, 0.05),
+    0 8px 26px rgba(20, 33, 58, 0.1);
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
 }
-.pillar:first-child {
-  border-left: 1px solid var(--line-light);
-}
-.pillar:last-child {
-  border-right: 1px solid var(--line-light);
+.pillar:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 2px 6px rgba(20, 33, 58, 0.07),
+    0 14px 30px rgba(20, 33, 58, 0.15);
 }
 .pillar img {
   width: 44px;
@@ -828,20 +832,17 @@ main > section:not(.hero) {
   align-items: center;
 }
 .nation h2 {
-  font-size: clamp(26px, 2.8vw, 40px);
-  margin-bottom: 18px;
+  font-size: clamp(30px, 3.3vw, 48px);
+  margin-bottom: 20px;
 }
 .nation-copy {
   position: relative;
   z-index: 2;
 }
-.nation .eyebrow {
-  font-size: 10px;
-}
 .nation-copy .muted {
-  font-size: 15px;
-  margin-bottom: 26px;
-  max-width: 410px;
+  font-size: 17px;
+  margin-bottom: 28px;
+  max-width: 470px;
   color: var(--text-soft);
 }
 .nation-list {
@@ -907,6 +908,12 @@ main > section:not(.hero) {
   font-size: 12.5px;
   color: var(--muted);
 }
+.nation-list h4 {
+  font-size: 13.5px;
+}
+.nation-list p {
+  font-size: 14.5px;
+}
 .nation-list p {
   color: var(--text-soft);
 }
@@ -918,8 +925,8 @@ main > section:not(.hero) {
   gap: 44px;
   align-items: center;
 }
-.model .eyebrow {
-  font-size: 10px;
+.model-copy .eyebrow {
+  font-size: 13px; /* .model-copy p would otherwise set it to 14px */
 }
 .model h2 {
   font-size: clamp(24px, 2.6vw, 37px);
@@ -1024,7 +1031,7 @@ main > section:not(.hero) {
 }
 .impact-inner {
   position: relative;
- 
+
 }
 .impact h2 {
   position: relative;
@@ -1287,6 +1294,10 @@ main > section:not(.hero) {
 .foot .logo {
   --mark: 24px;
   justify-self: start;
+  align-items: flex-start; /* tagline starts at the same left edge as QUANTLEAP */
+}
+.foot .logo-tag {
+  margin-right: 0;
 }
 .foot nav {
   display: flex;
@@ -1543,16 +1554,9 @@ html.menu-open {
 @media (max-width: 1100px) {
   .pillars {
     grid-template-columns: repeat(3, 1fr);
-    row-gap: 34px;
-    margin-left: 0;
-    width: auto;
-  }
-  .pillar:nth-child(3n + 1) {
-    border-left: 0;
-    padding-left: 0;
   }
   .pillar:last-child {
-    border-right: 0;
+    grid-column: span 2; /* 5 cards in 3 columns: the last one fills the second row */
   }
   /* tablet + phone: section headings flow across the full width instead of breaking at the desktop line breaks */
   main h2 br {
@@ -1813,7 +1817,10 @@ html.menu-open {
     display: grid;
     grid-template-columns: repeat(4, auto);
     justify-content: center;
-    gap: 0 24px;
+    gap: 0 16px;
+  }
+  .foot {
+    gap: 16px; /* keeps logo, links and social icons inside the screen at 641-700px */
   }
   .hero-loc {
     display: none;
@@ -1828,10 +1835,11 @@ html.menu-open {
     max-width: none;
     border: 0;
   }
+  /* tablet: one row, five steps with a gold arrow column between each pair so the flow still reads left to right */
   .steps {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 16px;
+    grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr) 28px minmax(0, 1fr) 28px minmax(0, 1fr) 28px minmax(0, 1fr);
+    gap: 0;
   }
   .steps li:not(.arrow) {
     padding: 0;
@@ -1845,7 +1853,14 @@ html.menu-open {
     border-left: 0;
   }
   .arrow {
-    display: none;
+    position: static;
+    padding-top: 18px; /* centres the arrow on the 60px icon circle */
+    background: none;
+    text-align: center;
+  }
+  .arrow::before {
+    position: static;
+    font-size: 18px;
   }
   .stats {
     grid-template-columns: repeat(3, 1fr);
@@ -1984,19 +1999,48 @@ html.menu-open {
     height: 36px;
   }
 
-  /* model: phones wrap the steps two per row; tablets keep them in one row */
+  /* model: phones show the flow top to bottom, icon beside its text, with a down arrow between steps; tablets keep one row */
   .steps {
     display: flex;
-    flex-wrap: wrap;
-    gap: 22px 16px;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 0;
   }
   .steps li:not(.arrow) {
-    flex: 1 1 40%;
+    flex: none;
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    column-gap: 16px;
+    align-items: center;
   }
   .steps img {
     width: 64px;
     height: 64px;
     padding: 13px;
+    margin-bottom: 0;
+    grid-row: 1 / span 2;
+  }
+  .steps h4 {
+    align-self: end;
+  }
+  .steps p {
+    align-self: start;
+  }
+  .steps .arrow {
+    display: block; /* the 900px rule hides it; on phones it becomes the connector between steps */
+    position: static;
+    flex: none;
+    width: 64px;
+    height: 36px;
+    padding: 6px 0;
+    background: none;
+    text-align: center;
+  }
+  .steps .arrow::before {
+    content: "↓";
+    position: static;
+    font-size: 20px;
+    line-height: 24px;
   }
 
   /* focus */
@@ -2006,18 +2050,10 @@ html.menu-open {
   }
   .pillars {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    row-gap: 22px;
+    gap: 12px;
   }
   .pillar {
-    padding: 6px 14px;
-  }
-  .pillar:nth-child(odd) {
-    border-left: 0;
-    padding-left: 0;
-  }
-  .pillar:nth-child(even) {
-    border-left: 1px solid var(--line-light);
-    padding-left: 14px;
+    padding: 18px 16px 20px;
   }
   .pillar:last-child {
     grid-column: 1/-1;
