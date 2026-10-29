@@ -1422,8 +1422,9 @@ html.menu-open {
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
 }
 .modal-video .modal-close {
-  top: -52px;
-  right: 0;
+  top: 12px;
+  right: 12px;
+  z-index: 2; /* sits inside the frame, above the video */
 }
 .video-frame {
   border: 1.5px solid var(--watch-line);
