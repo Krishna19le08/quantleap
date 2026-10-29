@@ -257,5 +257,16 @@
     if (e.key === 'F12' || (e.ctrlKey || e.metaKey) && (k === 'u' || e.shiftKey && 'ijc'.includes(k)) || e.metaKey && e.altKey && 'iju'.includes(k)) e.preventDefault();
   });
 
+  // no select, no copy: blocks text selection, drag, copy/cut and Ctrl/Cmd+A/C/X/S/P (form fields stay usable)
+  const noCopy = () => {
+    const typing = e => e.target.closest && e.target.closest('input,textarea,[contenteditable="true"]');
+    ['selectstart', 'dragstart', 'copy', 'cut'].forEach(type =>
+      document.addEventListener(type, e => { if (!typing(e)) e.preventDefault(); }));
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && 'acxsp'.includes(e.key.toLowerCase()) && !typing(e)) e.preventDefault();
+    });
+  };
+  noCopy();
+
   include(document).then(init).catch(err => console.error(err));
 })();

@@ -31,6 +31,9 @@ html {
   scroll-padding-top: 72px;
 }
 body {
+  -webkit-user-select: none;
+  user-select: none; /* no text selection (form fields re-enabled below) */
+  -webkit-touch-callout: none;
   font-family: var(--sans);
   background: var(--navy);
   color: var(--white);
@@ -61,6 +64,14 @@ button {
 .container {
   width: min(1280px, 100% - 48px);
   margin-inline: auto;
+}
+input,
+textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+img {
+  -webkit-user-drag: none;
 }
 h1,
 h2,
@@ -1317,7 +1328,7 @@ main > section:not(.hero) {
   gap: 24px;
 }
 .foot .logo {
-  --mark: 26px; /* same look as the nav logo (centred tagline), just smaller */
+  --mark: 21px; /* same look as the nav logo (centred tagline), just smaller */
   justify-self: start;
 }
 .foot nav {
@@ -2223,13 +2234,19 @@ html.menu-open {
   }
   .foot {
     grid-template-columns: 1fr;
-    justify-items: start;
+    justify-items: center; /* phone footer: everything centred */
+    text-align: center;
     gap: 18px;
+  }
+  .foot .logo {
+    --mark: 17px;
+    justify-self: center;
   }
   .foot nav {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr)); /* tidy two-column list instead of a ragged wrapped row */
-    justify-content: stretch;
+    justify-content: center;
+    justify-items: center;
     gap: 0 24px;
     width: 100%;
     max-width: 320px;
@@ -2242,9 +2259,9 @@ html.menu-open {
     min-height: 38px;
   }
   .social {
-    justify-self: start;
+    justify-self: center;
+    justify-content: center;
     gap: 4px;
-    margin-left: -12px; /* icons are inset by the 12px tap padding; pull them back onto the text edge */
   }
   .social a {
     width: 44px;
@@ -2252,12 +2269,14 @@ html.menu-open {
     padding: 12px;
   }
   .foot-bottom {
-    align-items: flex-start;
+    align-items: center;
+    text-align: center;
     gap: 2px;
     padding-top: 0;
   }
   .legal {
-    align-self: flex-start;
+    align-self: center;
+    justify-content: center;
   }
 }
 
