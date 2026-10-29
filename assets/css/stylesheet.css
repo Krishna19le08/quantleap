@@ -168,7 +168,7 @@ em {
 .nav {
   display: flex;
   align-items: center;
-  height: 90px; /* constant: resizing on scroll made the bar shake */
+  height: 76px; /* constant: resizing on scroll made the bar shake */
   gap: 24px;
 }
 .nav > [id="nav"],
@@ -652,6 +652,10 @@ main > section:not(.hero) {
   flex-direction: column;
   transition: 0.3s;
 }
+.vcard,
+.icard {
+  cursor: pointer;
+}
 .vcard:hover {
   transform: translateY(-6px);
   border-color: rgba(240, 180, 41, 0.55);
@@ -714,6 +718,7 @@ main > section:not(.hero) {
   font-weight: 600;
   color: var(--white);
 }
+.vcard:hover .vbody a,
 .vbody a:hover {
   color: var(--gold);
 }
@@ -722,6 +727,7 @@ main > section:not(.hero) {
   margin-left: 8px;
   transition: transform 0.2s;
 }
+.vcard:hover .vbody a span,
 .vbody a:hover span {
   transform: translateX(4px);
 }
@@ -1174,17 +1180,19 @@ main > section:not(.hero) {
 .ibody a {
   font-size: 11px;
   font-weight: 600;
-  color: var(--gold-2);
+  color: var(--ink);
   transition: color 0.25s;
 }
+.icard:hover .ibody a,
 .ibody a:hover,
 .ibody a:focus-visible {
-  color: var(--ink);
+  color: var(--gold-2);
 }
 .ibody a span {
   display: inline-block;
   transition: transform 0.2s;
 }
+.icard:hover .ibody a span,
 .ibody a:hover span {
   transform: translateX(4px);
 }
