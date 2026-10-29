@@ -12,6 +12,7 @@
   --white: #fff;
   --black: #000;
   --watch-line: #e8c987;
+  --btn-radius: 8px;
   --line-light: #e3ddcd;
   --text-soft: #e8edf5;
   --line: rgba(255, 255, 255, 0.12);
@@ -102,7 +103,7 @@ em {
   padding: clamp(10px, calc(0.9vh + 6px), 18px) clamp(20px, calc(1vw + 14px), 32px);
   font-size: clamp(13px, calc(0.4vw + 0.6vh + 7px), 15px);
   font-weight: 600;
-  border-radius: 3px;
+  border-radius: var(--btn-radius);
   transition: 0.25s;
 }
 .btn-gold {
@@ -217,12 +218,11 @@ em {
   gap: 6px;
   align-items: center;
 }
-#nav a.active,
-#nav a:hover {
+#nav a.active {
   color: var(--white);
 }
-#nav > ul > li > a.active::after,
-#nav > ul > li > a:hover::after {
+/* gold underline wipes in left to right when a link becomes the active one (click / scroll), and keeps going the same way (out through the right) when it stops being active; no hover effect */
+#nav > ul > li > a::after {
   content: "";
   position: absolute;
   left: 0;
@@ -230,6 +230,13 @@ em {
   bottom: -2px;
   height: 2px;
   background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+#nav > ul > li > a.active::after {
+  transform: scaleX(1);
+  transform-origin: left;
 }
 .has-sub {
   position: relative;
@@ -446,7 +453,7 @@ em {
   min-height: 56px;
   padding: 8px 22px;
   border: 1.5px solid var(--watch-line);
-  border-radius: 12px;
+  border-radius: var(--btn-radius);
   background: rgba(1, 19, 31, 0.35);
   font-size: 15px;
   font-weight: 400;
@@ -456,6 +463,9 @@ em {
 }
 .watch:hover {
   border-color: var(--gold);
+}
+.watch-text .gold {
+  color: var(--gold);
 }
 .watch-text {
   padding-right: 26px;
@@ -598,9 +608,17 @@ main > section:not(.hero) {
   text-shadow: 0 1px 6px rgba(0, 28, 42, 0.9);
   color: var(--white);
   text-decoration: none;
-  border-bottom: 1px solid var(--gold);
+  border-bottom: 1px solid transparent;
   padding-bottom: 4px;
-} /* one border instead of text-decoration, so the line runs under text and arrow together */
+  /* gold line draws in left to right on hover/focus, under text and arrow together */
+  background: linear-gradient(var(--gold), var(--gold)) no-repeat left bottom / 0 1px;
+  background-origin: border-box;
+  transition: background-size 0.3s ease;
+}
+.ventures .link-gold:hover,
+.ventures .link-gold:focus-visible {
+  background-size: 100% 1px;
+}
 .carousel-wrap {
   position: relative;
 }
@@ -960,7 +978,7 @@ main > section:not(.hero) {
 }
 .impact-inner {
   position: relative;
-  padding: 14px 0 58px;
+ 
 }
 .impact h2 {
   position: relative;
@@ -1031,6 +1049,19 @@ main > section:not(.hero) {
 }
 
 /* insights */
+.insights .link-dark {
+  color: var(--gold-2);
+  padding-bottom: 4px;
+  border-bottom: 1px solid transparent;
+  /* same hover line as "View all ventures": draws in left to right */
+  background: linear-gradient(var(--gold-2), var(--gold-2)) no-repeat left bottom / 0 1px;
+  background-origin: border-box;
+  transition: background-size 0.3s ease;
+}
+.insights .link-dark:hover,
+.insights .link-dark:focus-visible {
+  background-size: 100% 1px;
+}
 .insights h2 {
   font-size: clamp(24px, 2.8vw, 34px);
 }
@@ -1088,7 +1119,7 @@ main > section:not(.hero) {
 .ibody a {
   font-size: 11px;
   font-weight: 600;
-  color: var(--ink);
+  color: var(--gold-2);
 }
 .ibody a span {
   display: inline-block;
@@ -1171,15 +1202,10 @@ main > section:not(.hero) {
   justify-content: space-between;
   align-items: center;
   gap: 28px;
-  padding: 48px 0;
   flex-wrap: wrap;
-  padding-right: 10%;
 }
 .cta-2 {
   min-height: 206px;
-}
-.cta-2 .cta-inner {
-  padding: 44px 0 16px;
 }
 .cta-1 h2,
 #contact h2 {
@@ -1481,6 +1507,10 @@ html.menu-open {
   .pillar:last-child {
     border-right: 0;
   }
+  /* tablet + phone: section headings flow across the full width instead of breaking at the desktop line breaks */
+  main h2 br {
+    display: none;
+  }
   .nation-grid,
   .presence-grid {
     grid-template-columns: 1fr 1fr;
@@ -1490,7 +1520,7 @@ html.menu-open {
     margin: 0;
   }
   .nation-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr; /* tablet: copy beside the map; phones stack (see 640px block) */
   }
   .nation .map-box {
     width: 100%;
@@ -1523,12 +1553,6 @@ html.menu-open {
   }
   .nation-grid {
     gap: 28px;
-  }
-  .nation-copy .muted {
-    max-width: 620px;
-  }
-  .nation h2 {
-    max-width: 640px;
   }
   .nation .nation-list {
     display: grid;
@@ -1633,8 +1657,7 @@ html.menu-open {
   #nav > ul > li {
     width: 100%;
   }
-  #nav > ul > li > a.active::after,
-  #nav > ul > li > a:hover::after {
+  #nav > ul > li > a::after {
     display: none;
   }
   /* short gold bar marks the current page */
@@ -1653,8 +1676,7 @@ html.menu-open {
   #nav > ul > li > a.active::before {
     transform: translateY(-50%) scaleY(1);
   }
-  #nav a.active,
-  #nav a:hover {
+  #nav a.active {
     color: var(--gold);
   }
   .logo {
@@ -1750,12 +1772,17 @@ html.menu-open {
     border: 0;
   }
   .steps {
-    flex-wrap: wrap;
-    gap: 24px;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
   }
   .steps li:not(.arrow) {
-    flex: 1 1 40%;
     padding: 0;
+  }
+  .steps img {
+    width: 60px;
+    height: 60px;
+    padding: 12px;
   }
   .steps li:first-child {
     border-left: 0;
@@ -1778,6 +1805,14 @@ html.menu-open {
   }
   main > section:not(.hero) {
     padding-block: 36px;
+  }
+  /* intro copy uses the full column on phones instead of the desktop reading-width caps */
+  .lead,
+  .model-copy p,
+  .nation-copy .muted,
+  .presence-copy .muted,
+  .cta p {
+    max-width: none;
   }
   .head-row {
     flex-direction: column;
@@ -1882,7 +1917,6 @@ html.menu-open {
   .actions .watch {
     justify-content: center;
     min-height: 52px;
-    border-radius: 10px;
   }
   .actions .watch {
     gap: 20px;
@@ -1896,6 +1930,21 @@ html.menu-open {
   .actions .play {
     width: 36px;
     height: 36px;
+  }
+
+  /* model: phones wrap the steps two per row; tablets keep them in one row */
+  .steps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px 16px;
+  }
+  .steps li:not(.arrow) {
+    flex: 1 1 40%;
+  }
+  .steps img {
+    width: 64px;
+    height: 64px;
+    padding: 13px;
   }
 
   /* focus */
@@ -2023,10 +2072,6 @@ html.menu-open {
     min-height: 0;
     margin: 6px 0 4px;
   }
-  .insights h2 br,
-  .presence h2 br {
-    display: none;
-  }
 
   /* presence */
   .presence .map-box.wide {
@@ -2044,7 +2089,6 @@ html.menu-open {
     min-height: 0;
   }
   .cta .cta-inner {
-    padding: 36px 0;
     gap: 18px;
   }
   .cta-1 h2,

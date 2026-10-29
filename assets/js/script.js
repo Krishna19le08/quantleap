@@ -72,21 +72,72 @@
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && nav.classList.contains('open')) { setMenu(false); burger.focus(); }
   });
+  // compact: close the drawer first, let its slide-out finish, then smooth-scroll to the section
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
   nav.addEventListener('click', e => {
     const a = e.target.closest('a');
-    if (a && !(a === subToggle && compact.matches)) setMenu(false);
+    if (!a || (a === subToggle && compact.matches)) return;
+    const hash = a.getAttribute('href');
+    const open = nav.classList.contains('open');
+    setMenu(false);
+    if (!compact.matches || !open || !hash || hash[0] !== '#') return;
+    const dest = hash === '#top' ? null : document.querySelector(hash);
+    if (hash !== '#top' && !dest) return;
+    e.preventDefault();
+    e.stopPropagation();                  // the #top handler below would scroll while the drawer is still closing
+    setTimeout(() => {
+      const pad = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const y = dest ? Math.min(max, Math.max(0, dest.getBoundingClientRect().top + window.scrollY - pad)) : 0;
+      glideTo(y);
+      history.replaceState(null, '', hash);
+    }, reduceMotion.matches ? 0 : 340);   // drawer transform transition is 350ms
   });
+
+  // eased glide: slow start, gentle finish, duration grows with distance; any wheel/touch/key press hands control back
+  let glideId = 0;
+  const glideTo = y => {
+    const from = window.scrollY, dist = y - from;
+    const id = ++glideId;
+    if (reduceMotion.matches || Math.abs(dist) < 2) { window.scrollTo({ top: y, behavior: 'instant' }); return; }
+    const dur = Math.min(1400, Math.max(700, Math.abs(dist) * 0.55));
+    const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;   // easeInOutCubic
+    const stop = () => { glideId++; };
+    ['wheel', 'touchstart', 'keydown'].forEach(ev => window.addEventListener(ev, stop, { once: true, passive: true }));
+    const t0 = performance.now();
+    const step = now => {
+      if (id !== glideId) return;
+      const t = Math.min(1, (now - t0) / dur);
+      window.scrollTo({ top: from + dist * ease(t), behavior: 'instant' });   // instant: html{scroll-behavior:smooth} must not re-animate each frame
+      if (t < 1) requestAnimationFrame(step);
+      else ['wheel', 'touchstart', 'keydown'].forEach(ev => window.removeEventListener(ev, stop));
+    };
+    requestAnimationFrame(step);
+  };
 
   // active nav link on scroll: last section whose top is above 40% of the viewport; Home at the top
   const links = [...nav.querySelectorAll('a[href^="#"]')];
   const target = a => { const h = a.getAttribute('href'); return h === '#top' ? document.querySelector('.hero') : document.querySelector(h); };
   const spied = links.map(a => ({ a, s: target(a) })).filter(x => x.s);
+  const setActive = cur => spied.forEach(({ a, s }) => a.classList.toggle('active', s === cur));
+  let lockUntil = 0;                      // after a click, hold the clicked link active while the page scrolls past other sections
   const spy = () => {
+    if (performance.now() < lockUntil) return;
     const y = window.scrollY + window.innerHeight * .4;
     let cur = spied[0].s;
     spied.forEach(({ s }) => { if (s.offsetTop <= y && s.offsetTop >= cur.offsetTop) cur = s; });
-    spied.forEach(({ a, s }) => a.classList.toggle('active', s === cur));
+    setActive(cur);
   };
+  // clicking a nav link activates it right away (this is what plays the underline animation)
+  nav.addEventListener('click', e => {
+    const a = e.target.closest('a');
+    if (!a || (a === subToggle && compact.matches)) return;
+    const hit = spied.find(x => x.a === a);
+    if (!hit) return;
+    lockUntil = performance.now() + 2300;   // covers the menu close delay plus the longest glide
+    setActive(hit.s);
+  });
+  ['wheel', 'touchstart'].forEach(ev => window.addEventListener(ev, () => { lockUntil = 0; }, { passive: true }));   // user took over: follow the scroll again
   spy();
   window.addEventListener('scroll', spy, { passive: true });
   window.addEventListener('resize', spy);
