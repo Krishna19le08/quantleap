@@ -180,7 +180,7 @@ em {
   margin-left: auto;
 }
 .logo {
-  --mark: 33px;
+  --mark: 28px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -188,6 +188,8 @@ em {
 }
 /* header logo shrinks a little once the page scrolls; transform only, so nothing reflows or shakes */
 .site-header .logo {
+  position: relative;
+  top: 6px; /* sits a little lower in the bar */
   transform-origin: left center;
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -391,7 +393,8 @@ em {
 .hero {
   position: relative;
   min-height: 600px;
-  height: min(88vh, 663px);
+  height: 100vh;
+  height: 100svh; /* full screen; svh keeps it stable under mobile browser bars */
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -1973,7 +1976,8 @@ html.menu-open {
   /* hero */
   .hero {
     height: auto;
-    min-height: 560px;
+    min-height: 100vh;
+    min-height: 100svh;
     padding: 100px 0 48px;
   }
   .hero-inner {
@@ -2005,6 +2009,7 @@ html.menu-open {
     gap: 12px;
   }
   .actions .watch {
+    justify-self: start; /* sits on the left edge under the full-width button instead of floating in the middle */
     gap: 14px;
     padding: 0 8px;
     font-size: 14px;
@@ -2184,6 +2189,8 @@ html.menu-open {
     margin: 0;
   }
   .locs {
+    flex-direction: column; /* one consistent column; the wrapped row put two items on one line and two on their own */
+    flex-wrap: nowrap;
     gap: 18px;
   }
 
@@ -2220,10 +2227,12 @@ html.menu-open {
     gap: 18px;
   }
   .foot nav {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* tidy two-column list instead of a ragged wrapped row */
+    justify-content: stretch;
+    gap: 0 24px;
+    width: 100%;
+    max-width: 320px;
   }
   .foot nav a {
     white-space: nowrap;
