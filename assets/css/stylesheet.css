@@ -184,8 +184,8 @@ em {
 }
 .nav > [id="nav"],
 .nav > nav {
-  margin-left: auto;
-  margin-right: clamp(0px, 8vw, 120px);
+  margin-left: auto; /* menu links pushed to the right */
+  margin-right: 0;
 }
 .nav .burger {
   margin-left: auto;
