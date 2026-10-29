@@ -100,9 +100,8 @@ em {
   display: inline-flex;
   align-items: center;
   gap: 14px;
-  /* every button shares one size: --btn-h tall, at least --btn-w wide, label centred */
+  /* every button shares one height (--btn-h); width follows the label */
   height: var(--btn-h);
-  min-width: var(--btn-w);
   justify-content: center;
   padding: 0 clamp(20px, calc(1vw + 14px), 32px);
   font-size: clamp(13px, calc(0.4vw + 0.6vh + 7px), 15px);
@@ -145,36 +144,32 @@ em {
 
 /* header */
 .site-header {
-  position: absolute;
+  position: fixed; /* always fixed: switching from absolute at the scroll threshold made the bar jump */
   inset: 0 0 auto 0;
   z-index: 50;
-  transition:
-    background 0.3s,
-    box-shadow 0.3s;
 }
-.site-header.stuck {
-  position: fixed;
-  background-image: none;
+/* the stuck backdrop lives on a pseudo-element so it can fade (opacity) instead of snapping */
+.site-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
   background-color: rgba(1, 19, 31, 0.94);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+.site-header.stuck::before {
+  opacity: 1;
 }
 .nav {
   display: flex;
   align-items: center;
-  height: 106px;
+  height: 90px; /* constant: resizing on scroll made the bar shake */
   gap: 24px;
-  transition: height 0.3s ease;
-}
-.site-header.stuck .nav {
-  height: 76px;
-}
-.site-header.stuck .logo {
-  --mark: 26px;
-}
-.site-header.stuck .logo-tag {
-  font-size: 10px;
-  margin-top: 4px;
 }
 .nav > [id="nav"],
 .nav > nav {
@@ -191,10 +186,17 @@ em {
   align-items: center;
   line-height: 1;
 }
+/* header logo shrinks a little once the page scrolls; transform only, so nothing reflows or shakes */
+.site-header .logo {
+  transform-origin: left center;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.site-header.stuck .logo {
+  transform: scale(0.82);
+}
 .logo-mark {
   font-family: var(--sans);
   font-size: var(--mark);
-  transition: font-size 0.3s ease;
   letter-spacing: 0.24em;
   font-weight: 500;
 }
@@ -447,7 +449,7 @@ em {
 .actions {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: 1fr; /* both buttons take the width of the wider one */
+  grid-auto-columns: auto; /* each button sizes to its own label */
   width: max-content;
   max-width: 100%;
   gap: 16px;
@@ -458,28 +460,21 @@ em {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 26px;
+  gap: 14px;
   height: var(--btn-h);
-  min-width: var(--btn-w);
-  padding: 0 22px;
-  border: 1.5px solid var(--watch-line);
-  border-radius: var(--btn-radius);
-  background: rgba(1, 19, 31, 0.35);
+  padding: 0 8px;
+  border: 0;
+  background: none;
   font-size: 15px;
-  font-weight: 400;
-  letter-spacing: 0.03em;
-  line-height: 1.3;
-  transition: border-color 0.25s;
-}
-.watch:hover {
-  border-color: var(--gold);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
 }
 .watch-text .gold {
   color: var(--gold);
 }
 .watch-text {
-  padding-right: 26px;
-  border-right: 1px solid rgba(232, 201, 135, 0.45);
+  text-align: left;
 }
 .play {
   width: clamp(38px, calc(2vw + 2vh + 12px), 50px);
@@ -492,8 +487,9 @@ em {
   transition: 0.25s;
 }
 .watch .play {
-  width: 38px; /* fixed so the ring always sits inside the button, never touching its border */
+  width: 38px;
   height: 38px;
+  border-color: #fff;
   flex: none;
 }
 .watch:hover .play {
@@ -536,12 +532,10 @@ main > section:not(.hero) {
   background: var(--navy);
 } /* nation is flat navy; presence keeps the glow */
 .section-divider {
-  background: rgba(255, 255, 255, 0.18);
-  height: 1px;
-  margin-inline: auto;
-  width: min(1280px, calc(100% - 48px));
+  background: #fff;
+  height: 10px;
+  width: 100%; /* full viewport width, edge to edge */
   padding: 0;
-  opacity: 0.45;
 }
 .head-row {
   display: flex;
@@ -589,15 +583,6 @@ main > section:not(.hero) {
   box-shadow:
     0 1px 3px rgba(20, 33, 58, 0.05),
     0 8px 26px rgba(20, 33, 58, 0.1);
-  transition:
-    transform 0.3s,
-    box-shadow 0.3s;
-}
-.pillar:hover {
-  transform: translateY(-3px);
-  box-shadow:
-    0 2px 6px rgba(20, 33, 58, 0.07),
-    0 14px 30px rgba(20, 33, 58, 0.15);
 }
 .pillar img {
   width: 44px;
@@ -645,9 +630,12 @@ main > section:not(.hero) {
   display: flex;
   gap: 16px;
   overflow-x: auto;
+  overflow-y: hidden; /* horizontal only; hover lift and shadow get room via padding so nothing scrolls vertically */
+  overscroll-behavior-y: auto;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
-  padding-bottom: 4px;
+  padding: 10px 0 30px;
+  margin: -10px 0 -26px;
 }
 .carousel::-webkit-scrollbar {
   display: none;
@@ -698,7 +686,7 @@ main > section:not(.hero) {
   background: linear-gradient(180deg, #7fa88a, #cfd7c0);
 }
 .vbody {
-  padding: 14px 16px 16px;
+  padding: 20px 28px 24px; /* same as .ibody */
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -835,6 +823,11 @@ main > section:not(.hero) {
   font-size: clamp(30px, 3.3vw, 48px);
   margin-bottom: 20px;
 }
+@media (min-width: 1001px) {
+  .nation h2 {
+    width: 125%; /* wider than the copy column (it overlaps the map's dark edge) so the heading wraps in fewer lines */
+  }
+}
 .nation-copy {
   position: relative;
   z-index: 2;
@@ -939,17 +932,26 @@ main > section:not(.hero) {
   max-width: 360px;
 }
 .model .link-dark {
-  border-bottom: 1px solid var(--gold);
+  border-bottom: 1px solid transparent;
   padding-bottom: 5px;
+  /* same animation as "View all insights": line is always there, hides right to left on hover, draws back left to right on leave */
+  background: linear-gradient(var(--gold), var(--gold)) no-repeat left bottom / 100% 1px;
+  background-origin: border-box;
+  transition: background-size 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.model .link-dark:hover,
+.model .link-dark:focus-visible {
+  background-size: 0 1px;
 }
 .steps {
   display: flex;
   align-items: stretch;
 }
 .steps li:not(.arrow) {
-  flex: 1;
+  flex: 1 1 0; /* zero basis so all five steps get identical widths regardless of text length */
+  min-width: 0;
   text-align: left;
-  padding: 0 0 0 28px;
+  padding: 0 24px 0 28px;
 }
 .steps li:first-child {
   border-left: 1px solid var(--line-light);
@@ -1172,6 +1174,11 @@ main > section:not(.hero) {
 .ibody a {
   font-size: 11px;
   font-weight: 600;
+  color: var(--gold-2);
+  transition: color 0.25s;
+}
+.ibody a:hover,
+.ibody a:focus-visible {
   color: var(--ink);
 }
 .ibody a span {
@@ -1249,6 +1256,13 @@ main > section:not(.hero) {
     rgba(0, 28, 42, 0.15) 60%
   );
 }
+/* "Singapore: what's next" section: extra black layer over the photo */
+#contact .cta-shade::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
 .cta-inner {
   position: relative;
   display: flex;
@@ -1292,12 +1306,8 @@ main > section:not(.hero) {
   gap: 24px;
 }
 .foot .logo {
-  --mark: 24px;
+  --mark: 26px; /* same look as the nav logo (centred tagline), just smaller */
   justify-self: start;
-  align-items: flex-start; /* tagline starts at the same left edge as QUANTLEAP */
-}
-.foot .logo-tag {
-  margin-right: 0;
 }
 .foot nav {
   display: flex;
@@ -1308,20 +1318,37 @@ main > section:not(.hero) {
 .foot nav a {
   font-size: 12px;
   color: #cfd8e6;
-  transition: color 0.2s;
+  position: relative;
 }
-.foot nav a:hover {
-  color: var(--gold);
+/* same gold underline wipe as the nav bar: in left to right on hover/focus, out through the right on leave */
+.foot nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% + 0.95em); /* just under the text, whatever the link's box height */
+  height: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.foot nav a:hover::after,
+.foot nav a:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
 }
 .social {
   display: flex;
-  gap: 14px;
+  flex-wrap: wrap;
+  gap: 18px;
   justify-self: end;
 }
 .social a {
-  width: 22px;
-  height: 22px;
-  color: var(--white);
+  flex: none; /* never let a narrow column squash the icons to nothing */
+  width: 16px;
+  height: 16px;
+  color: rgba(255, 255, 255, 0.7); /* small, muted icons; gold on hover */
   transition: 0.2s;
 }
 .social a:hover {
@@ -1563,12 +1590,6 @@ html.menu-open {
     display: none;
   }
   /* tablet + phone: "Watch Our Story" on one line inside its button */
-  .watch-text br {
-    display: none;
-  }
-  .watch-text {
-    white-space: nowrap;
-  }
   .nation-grid,
   .presence-grid {
     grid-template-columns: 1fr 1fr;
@@ -1905,16 +1926,6 @@ html.menu-open {
     font-size: 9px;
     margin-top: 5px;
   }
-  .site-header.stuck .nav {
-    height: 64px;
-  }
-  .site-header.stuck .logo {
-    --mark: clamp(15px, 5vw, 20px);
-  }
-  .site-header.stuck .logo-tag {
-    font-size: 8.5px;
-    margin-top: 3px;
-  }
   #nav {
     padding: 100px 16px 32px;
   }
@@ -1986,13 +1997,10 @@ html.menu-open {
     gap: 12px;
   }
   .actions .watch {
-    gap: 20px;
-    padding: 0 20px;
+    gap: 14px;
+    padding: 0 8px;
     font-size: 14px;
     line-height: 1.25;
-  }
-  .actions .watch-text {
-    padding-right: 20px;
   }
   .actions .play {
     width: 36px;
@@ -2202,13 +2210,6 @@ html.menu-open {
     grid-template-columns: 1fr;
     justify-items: start;
     gap: 18px;
-  }
-  .foot .logo {
-    --mark: 20px;
-    align-items: flex-start;
-  }
-  .foot .logo-tag {
-    margin-right: 0;
   }
   .foot nav {
     display: flex;
