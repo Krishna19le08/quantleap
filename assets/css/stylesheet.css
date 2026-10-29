@@ -13,6 +13,8 @@
   --black: #000;
   --watch-line: #e8c987;
   --btn-radius: 8px;
+  --btn-h: 52px;
+  --btn-w: 290px; /* fits the longest label ("Our Nation Building Initiatives") */
   --line-light: #e3ddcd;
   --text-soft: #e8edf5;
   --line: rgba(255, 255, 255, 0.12);
@@ -98,9 +100,11 @@ em {
   display: inline-flex;
   align-items: center;
   gap: 14px;
-  /* scale with viewport height and width, with a 44px touch-target floor */
-  min-height: 44px;
-  padding: clamp(10px, calc(0.9vh + 6px), 18px) clamp(20px, calc(1vw + 14px), 32px);
+  /* every button shares one size: --btn-h tall, at least --btn-w wide, label centred */
+  height: var(--btn-h);
+  min-width: var(--btn-w);
+  justify-content: center;
+  padding: 0 clamp(20px, calc(1vw + 14px), 32px);
   font-size: clamp(13px, calc(0.4vw + 0.6vh + 7px), 15px);
   font-weight: 600;
   border-radius: var(--btn-radius);
@@ -221,7 +225,7 @@ em {
 #nav a.active {
   color: var(--white);
 }
-/* gold underline wipes in left to right when a link becomes the active one (click / scroll), and keeps going the same way (out through the right) when it stops being active; no hover effect */
+/* gold underline wipes in left to right on hover/focus and when a link becomes the active one (click / scroll), and keeps going the same way (out through the right) when it lets go */
 #nav > ul > li > a::after {
   content: "";
   position: absolute;
@@ -234,7 +238,9 @@ em {
   transform-origin: right;
   transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-#nav > ul > li > a.active::after {
+#nav > ul > li > a.active::after,
+#nav > ul > li > a:hover::after,
+#nav > ul > li > a:focus-visible::after {
   transform: scaleX(1);
   transform-origin: left;
 }
@@ -439,19 +445,23 @@ em {
   text-wrap: balance;
 }
 .actions {
-  display: flex;
-  align-items: stretch; /* Watch button matches the gold button's height */
-  gap: 30px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr; /* both buttons take the width of the wider one */
+  width: max-content;
+  max-width: 100%;
+  gap: 16px;
 }
 .watch {
   text-shadow: 0 1px 8px rgba(0, 20, 40, 0.9);
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 26px;
-  min-height: 56px;
-  padding: 8px 22px;
+  height: var(--btn-h);
+  min-width: var(--btn-w);
+  padding: 0 22px;
   border: 1.5px solid var(--watch-line);
   border-radius: var(--btn-radius);
   background: rgba(1, 19, 31, 0.35);
@@ -480,6 +490,11 @@ em {
   display: grid;
   place-items: center;
   transition: 0.25s;
+}
+.watch .play {
+  width: 38px; /* fixed so the ring always sits inside the button, never touching its border */
+  height: 38px;
+  flex: none;
 }
 .watch:hover .play {
   background: var(--gold);
@@ -610,14 +625,14 @@ main > section:not(.hero) {
   text-decoration: none;
   border-bottom: 1px solid transparent;
   padding-bottom: 4px;
-  /* gold line draws in left to right on hover/focus, under text and arrow together */
-  background: linear-gradient(var(--gold), var(--gold)) no-repeat left bottom / 0 1px;
+  /* gold underline is always there; on hover/focus it hides right to left (right end sweeps back to the left), and draws back left to right when the pointer leaves */
+  background: linear-gradient(var(--gold), var(--gold)) no-repeat left bottom / 100% 1px;
   background-origin: border-box;
-  transition: background-size 0.3s ease;
+  transition: background-size 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 .ventures .link-gold:hover,
 .ventures .link-gold:focus-visible {
-  background-size: 100% 1px;
+  background-size: 0 1px;
 }
 .carousel-wrap {
   position: relative;
@@ -675,6 +690,9 @@ main > section:not(.hero) {
 .v5 {
   background: linear-gradient(180deg, #8e8a84, #4d4a46);
 }
+.v6 {
+  background: linear-gradient(180deg, #7fa88a, #cfd7c0);
+}
 .vbody {
   padding: 14px 16px 16px;
   display: flex;
@@ -715,22 +733,36 @@ main > section:not(.hero) {
 .vbody a:hover span {
   transform: translateX(4px);
 }
+/* plain chevron, no circle; drawn (not a font glyph) so it centres exactly, with a soft shadow to stay readable over the photos */
 .car-btn {
   position: absolute;
-  top: 60px;
-  width: 34px;
-  height: 34px;
+  top: 60px; /* middle of the 120px card photo */
+  width: 40px;
+  height: 40px;
   display: grid;
   place-items: center;
-  font-size: 26px;
-  line-height: 1;
-  padding-bottom: 3px;
-  color: rgba(255, 255, 255, 0.75);
+  font-size: 0;
+  color: var(--white);
+  background: none;
+  border: 0;
   z-index: 2;
   transform: translateY(-50%);
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.9)) drop-shadow(0 1px 6px rgba(0, 0, 0, 0.7));
   transition:
     color 0.2s,
     opacity 0.2s;
+}
+.car-btn::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border: solid currentColor;
+  border-width: 0 0 2.5px 2.5px;
+  transform: translateX(3px) rotate(45deg);
+}
+.car-btn.next::before {
+  border-width: 2.5px 2.5px 0 0;
+  transform: translateX(-3px) rotate(45deg);
 }
 .car-btn:hover:not(:disabled) {
   color: var(--gold);
@@ -760,15 +792,29 @@ main > section:not(.hero) {
   }
 }
 @media (max-width: 1399px) {
+  /* tablet: arrows sit on the dark background under the cards (a white chevron over a bright photo disappears) */
+  .carousel-wrap {
+    padding-bottom: 56px;
+  }
   .car-btn {
-    background: rgba(1, 19, 31, 0.85);
-    border: 1px solid var(--line);
-    border-radius: 50%;
+    top: auto;
+    bottom: 0;
+    width: 44px;
+    height: 44px;
+    transform: none;
+    filter: none;
+  }
+  .car-btn.prev {
+    left: calc(50% - 52px);
+  }
+  .car-btn.next {
+    right: auto;
+    left: calc(50% + 8px);
   }
   .car-btn:disabled {
-    display: none;
+    opacity: 0.25;
   }
-} /* inside the photos: only show an arrow when it can scroll */
+} /* an arrow dims when it can't scroll further */
 
 /* nation */
 .nation {
@@ -1050,17 +1096,17 @@ main > section:not(.hero) {
 
 /* insights */
 .insights .link-dark {
-  color: var(--gold-2);
+  color: var(--ink);
   padding-bottom: 4px;
   border-bottom: 1px solid transparent;
-  /* same hover line as "View all ventures": draws in left to right */
-  background: linear-gradient(var(--gold-2), var(--gold-2)) no-repeat left bottom / 0 1px;
+  /* same animation as "View all ventures": line is always there, hides right to left on hover, draws back left to right on leave */
+  background: linear-gradient(var(--gold-2), var(--gold-2)) no-repeat left bottom / 100% 1px;
   background-origin: border-box;
-  transition: background-size 0.3s ease;
+  transition: background-size 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 .insights .link-dark:hover,
 .insights .link-dark:focus-visible {
-  background-size: 100% 1px;
+  background-size: 0 1px;
 }
 .insights h2 {
   font-size: clamp(24px, 2.8vw, 34px);
@@ -1119,7 +1165,7 @@ main > section:not(.hero) {
 .ibody a {
   font-size: 11px;
   font-weight: 600;
-  color: var(--gold-2);
+  color: var(--ink);
 }
 .ibody a span {
   display: inline-block;
@@ -1512,6 +1558,13 @@ html.menu-open {
   main h2 br {
     display: none;
   }
+  /* tablet + phone: "Watch Our Story" on one line inside its button */
+  .watch-text br {
+    display: none;
+  }
+  .watch-text {
+    white-space: nowrap;
+  }
   .nation-grid,
   .presence-grid {
     grid-template-columns: 1fr 1fr;
@@ -1661,7 +1714,10 @@ html.menu-open {
   #nav > ul > li > a::after {
     display: none;
   }
-  /* short gold bar marks the current page */
+  /* short gold bar marks the current page; links are indented so the bar never touches the text (tablet + phone) */
+  #nav > ul > li > a {
+    padding-left: 16px;
+  }
   #nav > ul > li > a::before {
     content: "";
     position: absolute;
@@ -1849,13 +1905,16 @@ html.menu-open {
   }
   #nav > ul > li > a {
     font-size: 17px;
-    padding: 14px 0 14px 16px;
+    padding-block: 14px;
   }
 
   /* buttons + tap targets */
+  :root {
+    --btn-h: 48px;
+    --btn-w: 240px;
+  }
   .btn {
-    min-height: 44px;
-    padding: 10px 18px;
+    padding: 0 18px;
     font-size: 13px;
     gap: 10px;
   }
@@ -1877,10 +1936,6 @@ html.menu-open {
   .ibody a {
     min-height: 36px;
   }
-  .watch {
-    min-height: 44px;
-  }
-
   /* hero */
   .hero {
     height: auto;
@@ -1910,18 +1965,14 @@ html.menu-open {
     margin-bottom: 24px;
   }
   .actions {
-    flex-direction: column;
-    align-items: stretch;
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+    width: auto;
     gap: 12px;
-  }
-  .actions .btn,
-  .actions .watch {
-    justify-content: center;
-    min-height: 52px;
   }
   .actions .watch {
     gap: 20px;
-    padding: 6px 20px;
+    padding: 0 20px;
     font-size: 14px;
     line-height: 1.25;
   }
