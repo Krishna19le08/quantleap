@@ -268,5 +268,35 @@
   };
   noCopy();
 
+  // deterrent only: covers the page while a docked devtools panel is open on desktop (it can't truly hide the source)
+  const guardDevtools = () => {
+    const cover = document.createElement('div');
+    cover.hidden = true;
+    cover.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#021523';
+    document.body.appendChild(cover);
+    const stash = document.createDocumentFragment();
+    const check = () => {
+      const docked = window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 200;
+      const hide = docked && window.matchMedia('(hover: hover)').matches;
+      cover.hidden = !hide;
+      // also lift the page out of the DOM so the Elements panel shows an empty body, then put it back
+      if (hide) {
+        [...document.body.children].forEach(el => { if (el !== cover && el.tagName !== 'SCRIPT') stash.appendChild(el); });
+      } else if (stash.childNodes.length) {
+        document.body.insertBefore(stash, cover);
+      }
+    };
+    window.addEventListener('resize', check);
+    // right-click menu (Inspect) and the devtools / view-source shortcuts
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+      const k = e.key.toLowerCase();
+      const mod = e.ctrlKey || e.metaKey;
+      if (e.key === 'F12' || (mod && e.shiftKey && 'ijc'.includes(k)) || (mod && e.altKey && k === 'i') || (mod && k === 'u')) e.preventDefault();
+    });
+    check();
+  };
+  guardDevtools();
+
   include(document).then(init).catch(err => console.error(err));
 })();
