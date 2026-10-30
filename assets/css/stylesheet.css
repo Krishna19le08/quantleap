@@ -590,7 +590,7 @@ main > section:not(.hero) {
   gap: 18px; /* separate cards with space between them */
 }
 .pillar {
-  padding: 30px 28px 32px;
+  padding: 30px 28px;
   background: var(--cream); /* same colour as the section; the shadow alone lifts each card */
   border: 1px solid rgba(255, 255, 255, 0.9); /* faint light edge, no hard outline */
   border-radius: 8px;
@@ -704,7 +704,7 @@ main > section:not(.hero) {
   background: linear-gradient(180deg, #7fa88a, #cfd7c0);
 }
 .vbody {
-  padding: 20px 28px 24px; /* same as .ibody */
+  padding: 24px 28px; /* same as .ibody */
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -1174,7 +1174,7 @@ main > section:not(.hero) {
   background: linear-gradient(180deg, #7fa88a, #cfd7c0);
 }
 .ibody {
-  padding: 20px 28px 24px;
+  padding: 24px 28px;
 }
 .ibody small {
   font-size: 9px;
