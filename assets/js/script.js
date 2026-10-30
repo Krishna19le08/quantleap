@@ -271,14 +271,14 @@
   // deterrent only: covers the page while a docked devtools panel is open on desktop (it can't truly hide the source)
   const guardDevtools = () => {
     const cover = document.createElement('div');
-    cover.hidden = true;
-    cover.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#021523';
+    cover.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#021523;color:#fff;align-items:center;justify-content:center;text-align:center;padding:24px;font:500 18px/1.5 system-ui,sans-serif;display:none';
+    cover.textContent = 'Inspecting this page is not allowed. Please close Developer Tools to continue.';
     document.body.appendChild(cover);
     const stash = document.createDocumentFragment();
     const check = () => {
       const docked = window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 200;
       const hide = docked && window.matchMedia('(hover: hover)').matches;
-      cover.hidden = !hide;
+      cover.style.display = hide ? "flex" : "none";
       // also lift the page out of the DOM so the Elements panel shows an empty body, then put it back
       if (hide) {
         [...document.body.children].forEach(el => { if (el !== cover && el.tagName !== 'SCRIPT') stash.appendChild(el); });
