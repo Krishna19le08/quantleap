@@ -271,8 +271,16 @@
   // deterrent only: covers the page while a docked devtools panel is open on desktop (it can't truly hide the source)
   const guardDevtools = () => {
     const cover = document.createElement('div');
-    cover.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#021523;color:#fff;align-items:center;justify-content:center;text-align:center;padding:24px;font:500 18px/1.5 system-ui,sans-serif;display:none';
-    cover.textContent = 'Inspecting this page is not allowed. Please close Developer Tools to continue.';
+    cover.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:radial-gradient(circle at 50% 38%,#0a2a40 0%,#01131f 70%);color:#fff;align-items:center;justify-content:center;padding:24px;font-family:inherit;display:none';
+    cover.innerHTML =
+      '<div style="max-width:460px;text-align:center">' +
+      '<div style="font-size:14px;letter-spacing:.3em;font-weight:500">QUANTLEAP</div>' +
+      '<div style="width:64px;height:64px;margin:32px auto 24px;border:2px solid #f3c148;border-radius:50%;display:grid;place-items:center">' +
+      '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f3c148" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>' +
+      '<div style="width:40px;height:2px;background:#f3c148;margin:0 auto 20px"></div>' +
+      '<h2 style="font-size:26px;font-weight:600;margin:0 0 12px">Inspection is not allowed</h2>' +
+      '<p style="font-size:15px;line-height:1.6;color:rgba(255,255,255,.7);margin:0">This page is protected. Please close Developer Tools to continue browsing.</p>' +
+      '</div>';
     document.body.appendChild(cover);
     const stash = document.createDocumentFragment();
     const check = () => {
