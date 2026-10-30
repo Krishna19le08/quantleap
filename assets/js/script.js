@@ -283,9 +283,16 @@
       '</div>';
     document.body.appendChild(cover);
     const stash = document.createDocumentFragment();
+    let probeOpen = false;
+    const probe = new Image();
+    Object.defineProperty(probe, 'id', { get: () => { probeOpen = true; return ''; } });
     const check = () => {
-      const docked = window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 200;
-      const hide = docked && window.matchMedia('(hover: hover)').matches;
+      const docked = window.outerWidth - window.innerWidth > 100 || window.outerHeight - window.innerHeight > 150;
+      // a logged element's id getter only runs while devtools is open, which also catches the device toolbar and undocked panels
+      probeOpen = false;
+      console.log(probe);
+      console.clear();
+      const hide = probeOpen || (docked && window.matchMedia('(hover: hover)').matches);
       cover.style.display = hide ? "flex" : "none";
       // also lift the page out of the DOM so the Elements panel shows an empty body, then put it back
       if (hide) {
@@ -295,6 +302,7 @@
       }
     };
     window.addEventListener('resize', check);
+    setInterval(check, 500); // resize doesn't always fire when devtools opens
     // right-click menu (Inspect) and the devtools / view-source shortcuts
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('keydown', e => {
@@ -304,7 +312,6 @@
     });
     check();
   };
-  guardDevtools();
-
-  include(document).then(init).catch(err => console.error(err));
+  // started only after init, so the guard never lifts nodes out of the page before the scripts have found them
+  include(document).then(init).then(guardDevtools).catch(err => console.error(err));
 })();
